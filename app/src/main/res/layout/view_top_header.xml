@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="296dp">
+
+    <View
+        android:id="@+id/bkg_view"
+        android:layout_width="match_parent"
+        android:layout_height="256dp"
+        android:background="#f23f7b" />
+
+    <TextView
+        android:id="@+id/hey"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
+        android:text="Hey"
+        android:textColor="@android:color/white"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/hey"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/vertical_margin_name"
+        android:gravity="center"
+        android:text="Rita Wang"
+        android:textColor="@android:color/white"
+        android:textSize="32sp" />
+
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@id/name"
+        android:layout_alignBottom="@id/name"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:src="@mipmap/ic_launcher"
+        android:tint="@android:color/holo_purple" />
+
+    <TextView
+        android:id="@+id/text_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
+        android:text="Your weekly progress"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/text_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/text_progress"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:text="More details >"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
+
+    <include
+        android:id="@+id/lesson_card_left"
+        layout="@layout/view_lesson_item_card"
+        android:layout_width="140dp"
+        android:layout_height="80dp"
+        android:layout_alignBottom="@id/bkg_view"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="-40dp" />
+
+    <include
+        android:id="@+id/lesson_card_right"
+        layout="@layout/view_lesson_item_card"
+        android:layout_width="140dp"
+        android:layout_height="80dp"
+        android:layout_alignBottom="@id/bkg_view"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="-40dp" />
+</RelativeLayout>
