@@ -29,12 +29,13 @@
             app:toolbarId="@+id/toolbar">
 
             <include
+                android:id="@+id/profile_header"
                 layout="@layout/view_top_header"
                 android:layout_width="match_parent"
-                android:layout_height="296dp"
+                android:layout_height="240dp"
                 android:layout_marginBottom="16dp"
                 android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax" />
+                app:layout_collapseMode="none" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
