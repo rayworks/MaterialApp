@@ -1,5 +1,6 @@
 package com.rayworks.materialapp
 
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -24,6 +25,9 @@ class ScrollingActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
         val toolbarLayout = findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout)
         toolbarLayout.title = "Rita Wang"//title
+
+        // set the background explicitly instead of 'app:contentScrim' to reduce the view flicking
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.colorPrimary)))
 
         val cardLeft = findViewById<CardView>(R.id.lesson_card_left)
         val cardRight = findViewById<CardView>(R.id.lesson_card_right)
