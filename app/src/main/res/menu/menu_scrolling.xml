@@ -8,7 +8,9 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />-->
 
-    <item android:icon="@mipmap/scan"
+    <item
+        android:id="@+id/action_scan"
+        android:icon="@mipmap/scan"
         android:title="Scan"
         app:showAsAction="always"/>
 </menu>

@@ -1,88 +1,104 @@
 package com.rayworks.materialapp
 
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewTreeObserver
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import kotlin.math.abs
+import com.ashokvarma.bottomnavigation.BottomNavigationBar
+import com.ashokvarma.bottomnavigation.BottomNavigationItem
+import com.rayworks.materialapp.TextFragment.Companion.newInstance
 
-class ScrollingActivity : AppCompatActivity() {
+class ScrollingActivity : AppCompatActivity(), BottomNavigationBar.OnTabSelectedListener {
+    private lateinit var bottomNavigationBar: BottomNavigationBar
+
+    private lateinit var fragment1: TextFragment
+    private lateinit var fragment2: TextFragment
+    private lateinit var homeFragment: HomeFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scrolling)
+
         setupViewComponents()
     }
 
     private fun setupViewComponents() {
-        setSupportActionBar(findViewById(R.id.toolbar))
-        val toolbarLayout = findViewById<CollapsingToolbarLayout>(R.id.toolbar_layout)
-        toolbarLayout.title = "Rita Wang"//title
+        bottomNavigationBar = findViewById(R.id.bottom_navigation_bar)
+        bottomNavigationBar.setTabSelectedListener(this)
 
-        // set the background explicitly instead of 'app:contentScrim' to reduce the view flicking
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.colorPrimary)))
+        homeFragment = HomeFragment()
+        fragment1 = newInstance(getString(R.string.para1), "Lesson")
+        fragment2 = newInstance(getString(R.string.para2), "Me")
 
-        val cardLeft = findViewById<CardView>(R.id.lesson_card_left)
-        val cardRight = findViewById<CardView>(R.id.lesson_card_right)
+        initNavigationItems()
+    }
 
-        val txtProgress = findViewById<TextView>(R.id.text_progress)
-        val txtMore = findViewById<TextView>(R.id.text_more)
+    private fun initNavigationItems() {
+        bottomNavigationBar.clearAll()
 
-        val maxScrollDist = resources.getDimensionPixelSize(R.dimen.vertical_scrollable_distance)
-        val maxTextDist = maxScrollDist / 5
+        val holoBlueDark = android.R.color.holo_blue_dark
+        bottomNavigationBar.apply {
+            addItem(
+                BottomNavigationItem(
+                    R.drawable.ic_launcher_background,
+                    "Home"
+                ).setActiveColorResource(holoBlueDark)
+            )
+            addItem(
+                BottomNavigationItem(
+                    R.drawable.ic_launcher_foreground,
+                    "Lesson"
+                ).setActiveColorResource(holoBlueDark)
+            )
+            addItem(
+                BottomNavigationItem(
+                    R.drawable.ic_launcher_background,
+                    "Me"
+                ).setActiveColorResource(holoBlueDark)
+            )
 
-        val appBar = findViewById<AppBarLayout>(R.id.app_bar)
-        appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            println(">>> verticalOffset : $verticalOffset")
+            initialise()
+        }
 
-            var toAlpha: Float = 1.0f - abs(verticalOffset) * 1.0f / maxScrollDist
-            cardLeft.alpha = toAlpha
-            cardRight.alpha = toAlpha
+        bottomNavigationBar.selectTab(0)
 
-            toAlpha = 1.0f - abs(verticalOffset) * 1.0f / maxTextDist
-            txtProgress.alpha = toAlpha
-            txtMore.alpha = toAlpha
-        })
+    }
 
-        val nameTextView = findViewById<TextView>(R.id.name)
-        nameTextView.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                if (nameTextView.width > 0) {
+    override fun onTabReselected(position: Int) {
+    }
 
-                    nameTextView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    val start = nameTextView.x.toInt()
-                    val top = nameTextView.y.toInt()
+    override fun onTabUnselected(position: Int) {
+    }
 
-                    println(">> start, top : $start, $top")
+    val tags = arrayListOf("tagHome", "tag1", "tag2")
+    override fun onTabSelected(position: Int) {
+        println(">>> tab item selected pos : $position")
 
-                    toolbarLayout.expandedTitleMarginTop = top
-                    toolbarLayout.expandedTitleMarginStart = start
+        val trans = supportFragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 
-                    nameTextView.visibility = View.INVISIBLE
+        val fragment = supportFragmentManager.findFragmentByTag(tags[position])
+        if (fragment == null) {
+            trans.replace(
+                R.id.fragment_holder,
+                when (position) {
+                    0 -> homeFragment
+                    1 -> fragment1
+                    else -> fragment2
+                },
+                tags[position]
+            ).commit()
+        } else {
+
+            for ((index, tag) in tags.withIndex()) {
+                if (index == position) {
+                    trans.show(fragment)
+                } else {
+                    val frag = supportFragmentManager.findFragmentByTag(tag)
+                    frag?.let {
+                        trans.hide(it)
+                    }
                 }
             }
-        })
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_scrolling, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        return super.onOptionsItemSelected(item)
+            trans.commit()
+        }
     }
 }
