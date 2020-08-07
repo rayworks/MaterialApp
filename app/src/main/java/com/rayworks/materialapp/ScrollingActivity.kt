@@ -17,16 +17,34 @@ class ScrollingActivity : AppCompatActivity(), BottomNavigationBar.OnTabSelected
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_scrolling)
 
-        setupViewComponents()
+        setupViewComponents(savedInstanceState)
     }
 
-    private fun setupViewComponents() {
+    private fun setupViewComponents(bundle: Bundle?) {
         bottomNavigationBar = findViewById(R.id.bottom_navigation_bar)
         bottomNavigationBar.setTabSelectedListener(this)
 
-        homeFragment = HomeFragment()
-        fragment1 = newInstance(getString(R.string.para1), "Lesson")
-        fragment2 = newInstance(getString(R.string.para2), "Me")
+        if (bundle == null) {
+            homeFragment = HomeFragment()
+            fragment1 = newInstance(getString(R.string.para1), "Lesson")
+            fragment2 = newInstance(getString(R.string.para2), "Me")
+
+        } else {
+            lastSelectedTabIndex = bundle.getInt("pos_last_selected", 0)
+
+            homeFragment =
+                supportFragmentManager.findFragmentByTag(tags[0]) as HomeFragment? ?: HomeFragment()
+            fragment1 =
+                supportFragmentManager.findFragmentByTag(tags[1]) as TextFragment? ?: newInstance(
+                    getString(R.string.para1),
+                    "Lesson"
+                )
+            fragment2 =
+                supportFragmentManager.findFragmentByTag(tags[2]) as TextFragment? ?: newInstance(
+                    getString(R.string.para2),
+                    "Me"
+                )
+        }
 
         initNavigationItems()
     }
@@ -58,47 +76,54 @@ class ScrollingActivity : AppCompatActivity(), BottomNavigationBar.OnTabSelected
             initialise()
         }
 
-        bottomNavigationBar.selectTab(0)
+        bottomNavigationBar.selectTab(lastSelectedTabIndex)
+    }
 
+    private var lastSelectedTabIndex = 0
+    private val tags = arrayListOf("tagHome", "tag1", "tag2")
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.apply {
+            putInt("pos_last_selected", lastSelectedTabIndex)
+        }
     }
 
     override fun onTabReselected(position: Int) {
     }
 
     override fun onTabUnselected(position: Int) {
+        println(">>> tab item unselected pos : $position")
     }
 
-    val tags = arrayListOf("tagHome", "tag1", "tag2")
     override fun onTabSelected(position: Int) {
         println(">>> tab item selected pos : $position")
 
         val trans = supportFragmentManager.beginTransaction()
             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
 
-        val fragment = supportFragmentManager.findFragmentByTag(tags[position])
-        if (fragment == null) {
-            trans.replace(
-                R.id.fragment_holder,
-                when (position) {
-                    0 -> homeFragment
-                    1 -> fragment1
-                    else -> fragment2
-                },
-                tags[position]
-            ).commit()
-        } else {
-
-            for ((index, tag) in tags.withIndex()) {
-                if (index == position) {
-                    trans.show(fragment)
-                } else {
-                    val frag = supportFragmentManager.findFragmentByTag(tag)
-                    frag?.let {
-                        trans.hide(it)
-                    }
-                }
+        if (lastSelectedTabIndex >= 0 && lastSelectedTabIndex < tags.size) {
+            val frag = supportFragmentManager.findFragmentByTag(tags[lastSelectedTabIndex])
+            if (frag != null) {
+                trans.hide(frag)
             }
-            trans.commit()
         }
+
+        var fragment = supportFragmentManager.findFragmentByTag(tags[position])
+        if (fragment == null) {
+            fragment = when (position) {
+                0 -> homeFragment
+                1 -> fragment1
+                else -> fragment2
+            }
+
+            trans.add(R.id.fragment_holder, fragment, tags[position]).show(fragment).commit()
+        } else {
+            println(">>> cached fragment : $fragment with tag ${tags[position]}")
+
+            trans.show(fragment).commit()
+        }
+
+        lastSelectedTabIndex = position
     }
 }
