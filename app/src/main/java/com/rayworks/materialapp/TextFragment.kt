@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_text.*
+import kotlin.random.Random
 
 internal const val KEY_MESSAGE = "message"
 internal const val KEY_TITLE = "txt_title"
@@ -53,5 +55,11 @@ class TextFragment : Fragment() {
         getCompatActivity().setSupportActionBar(root.findViewById(R.id.toolbar_text))
 
         getCompatActivity().supportActionBar?.title = title
+
+        progress_circular.apply {
+            setRounded(true)
+            setProgressWidth(dpToPx(activity!!, 4))
+            animateProgress(Random.Default.nextInt(0, 101).toFloat())
+        }
     }
 }
