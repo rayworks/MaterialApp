@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="240dp">
+    android:layout_height="240dp"
+    android:fitsSystemWindows="true">
 
     <View
         android:id="@+id/bkg_view"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="#f23f7b" />
+        android:layout_height="240dp"
+        android:background="@drawable/ic_bkg_oval_copy"
+        android:fitsSystemWindows="true" />
+
 
     <TextView
         android:id="@+id/hey"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="60dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
         android:gravity="center"
         android:text="Hey"
         android:textColor="@android:color/white"
         android:textSize="24sp" />
+
 
     <TextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/hey"
+        android:layout_marginTop="8dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/vertical_margin_name"
-        android:gravity="center"
         android:text="Rita Wang"
         android:textColor="@android:color/white"
         android:textSize="32sp" />
@@ -42,27 +46,6 @@
         android:layout_marginEnd="20dp"
         android:src="@mipmap/scan" />
 
-    <TextView
-        android:id="@+id/text_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/name"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:text="Your weekly progress"
-        android:textColor="@android:color/white"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/text_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/text_progress"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"
-        android:text="More details >"
-        android:textColor="@android:color/white"
-        android:textSize="14sp" />
 
     <include
         android:id="@+id/lesson_card_left"
@@ -82,4 +65,29 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="-40dp" />
+
+
+    <TextView
+        android:id="@+id/text_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/lesson_card_left"
+        android:layout_below="@id/name"
+        android:layout_marginStart="20dp"
+        android:gravity="center_vertical"
+        android:text="Your weekly progress"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/text_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/text_progress"
+        android:layout_alignBottom="@id/text_progress"
+        android:layout_alignParentEnd="true"
+        android:gravity="center_vertical"
+        android:text="More details >"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
 </RelativeLayout>
