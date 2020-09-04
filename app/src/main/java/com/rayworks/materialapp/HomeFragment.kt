@@ -48,7 +48,7 @@ class HomeFragment : Fragment() {
 
         activity!!.window.statusBarColor =
             if (hidden) resources.getColor(R.color.colorPrimary)
-            else Color.TRANSPARENT
+            else Color.TRANSPARENT // fit status bar
     }
 
     private fun initView() {
@@ -77,6 +77,7 @@ class HomeFragment : Fragment() {
 
         val appBar = root.findViewById<AppBarLayout>(R.id.app_bar)
         appBar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            println(">>> verticalOffset : $verticalOffset")
 
             val maxTextDist = maxScrollDist / 5
 
@@ -87,6 +88,9 @@ class HomeFragment : Fragment() {
             toAlpha = 1.0f - abs(verticalOffset) * 1.0f / maxTextDist
             txtProgress.alpha = toAlpha
             txtMore.alpha = toAlpha
+            if (toAlpha.equals(1.0f)) {
+                activity!!.window.statusBarColor = Color.TRANSPARENT
+            }
         })
 
         val bkgView = root.findViewById<View>(R.id.bkg_view)
@@ -97,7 +101,7 @@ class HomeFragment : Fragment() {
         nameTextView.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                if (nameTextView.width > 0) {
+                if (nameTextView.width > 0 && toolbarLayout.height > 0) {
 
                     nameTextView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     val start = nameTextView.x.toInt()
@@ -108,30 +112,13 @@ class HomeFragment : Fragment() {
                     toolbarLayout.expandedTitleMarginTop = top - nameTextView.height
                     toolbarLayout.expandedTitleMarginStart = start
 
-                    resolveToolbarLayoutSize()
+                    // for toolbar and cardItem clipped paddings
+                    maxScrollDist = toolbarLayout.height - dpToPx(context!!, 112).toInt()
 
                     nameTextView.visibility = View.INVISIBLE
                 }
             }
         })
-    }
-
-    fun resolveToolbarLayoutSize() {
-        val toolbarLayout: CollapsingToolbarLayout = root.findViewById(R.id.toolbar_layout)
-        toolbarLayout.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                if (toolbarLayout.height > 0) {
-                    println(">>> toolbarLayout height : ${toolbarLayout.height}")
-
-                    toolbarLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    // for toolbar and cardItem clipped paddings
-                    maxScrollDist = toolbarLayout.height - dpToPx(context!!, 112).toInt()
-                }
-            }
-        })
-
-        toolbarLayout.requestLayout()
     }
 
     private fun getCompatActivity() = (activity as AppCompatActivity)
